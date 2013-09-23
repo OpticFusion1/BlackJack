@@ -5,13 +5,13 @@ public class BlackJack {
 	private int start = 0;
 	private int numberOfPlayers = 0;
 	private ArrayList<Players> peoplePlaying;
+	private Deck deck;
 
 	public BlackJack(){
 		if(start == 0)
 			intro();
-
-
-
+		else
+			game();
 	}
 
 	private void intro(){
@@ -25,6 +25,11 @@ public class BlackJack {
 		}
 	start = 1;
 	numberOfPlayers = p;
+	}
+
+	public void game(){
+		deck = new Deck();
+
 	}
 
 }
