@@ -6,6 +6,7 @@ public class BlackJack {
 	private int numberOfPlayers = 0;
 	private ArrayList<Players> peoplePlaying;
 	private Deck deck;
+	private int gamesPlayed = 0;
 
 	public BlackJack(){
 		if(start == 0)
@@ -29,7 +30,15 @@ public class BlackJack {
 
 	public void game(){
 		deck = new Deck();
+		while!(isGameOver()){
+			
 
+
+		}
+
+	}
+	public boolean isGameOver(){
+		
 	}
 
 }
