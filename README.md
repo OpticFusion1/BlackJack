@@ -1,8 +1,14 @@
-This is a simple Black Jack Game writen in Java. Eventually when I have time I would like to make a GUI with 2D animations along with some sound and cool looking visuals. Also maybe eventually an android application eventually.
-Enjoy the game!
+Author - Croller
 
-THIS GAME IS NOT DONE
+This is a simple BlackJack Game written in Java. Eventually when I have time I would like to make a GUI with 2D animations along with some sound and cool looking visuals. Looking to create a server/client model into the game eventually
+
+Working Text Based Game of BlackJack (21)
+No Betting invoked yet
+No Client/Server Model yet
 
 To Run
-1) Compile Test file : javac Test.java
-2) Run and Enjoy! : java Test
+1) Open up Terminal
+2) Find where you have saved this file...(Most likely Downloads folder)
+3) "cd" into directory with the BlackJack files
+4) Compile BlackJack file : "javac BlackJack.java"
+5) Run and Enjoy! : "java BlackJack"
