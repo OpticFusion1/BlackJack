@@ -50,10 +50,11 @@ public class Deck {
 	//Returns: Random card in the deck
 	//If the deck is empty, a new deck is constructed
 	public String randomCard(){
+		//System.out.println(deck.size());
 		Random rand = new Random();
 		int r = rand.nextInt(deck.size());
 		while(deck.get(r) == null){
-			if (deck.size() == 0)
+			if (deck.isEmpty())
 				newDeck();
 			else
 				r = rand.nextInt(deck.size());
@@ -66,4 +67,5 @@ public class Deck {
 	public int deckSize(){
 		return deck.size();
 	}
+
 }
