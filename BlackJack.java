@@ -75,7 +75,7 @@ public class BlackJack {
 			}catch (Exception e){}
 			time--;
 		}
-		gamesPlayed = 1;
+		gamesPlayed++;
 	}
 
 	/*
@@ -83,7 +83,7 @@ public class BlackJack {
 	Pre-Conditions: A Scanner asking for input
 	Post-Conditions: A guarentee that the correct input was given from the user
 	*/
-	public int correctInput(){
+	private int correctInput(){
 		System.out.print("What would you like to do? (1-Hit, 2-Stay, 3-Double, 4-Split) : ");
 		String s = sc.nextLine();
 		while(!s.equals("1") && !s.equals("2") && !s.equals("3") && !s.equals("4")){
@@ -95,14 +95,22 @@ public class BlackJack {
 
 	}
 
-
+	/*
+	Overview: Method that plays the game of BlackJack
+			1)Deals init cards to dealer and players
+			2)loops through players moves
+			3)loops through dealers moves (AI)
+			4)evaluates who won and who lost
+			5)finds out who wants to play again and who doesn't
+			6)once player leave a game, statsics for games played are given
+	*/
 	public void game(){
-		deck = new Deck();
-		dealer = new Player(true, "Dealer");
-		System.out.println("Game Time! Lets go");
+		deck = new Deck(); //creates a new deck with 52 cards (eventually to be more once betting is implemented)
+		dealer = new Player(true, "Dealer"); //creates Player Dealer for dealer cards
+		System.out.println("\nRound " + gamesPlayed + "\n");
 		
 		boolean stillPlaying = true;
-		while(stillPlaying){
+		while(stillPlaying){ //Loop that iterates until all players are done playing
 
 			//Dealing init cards to players / dealer
 			for(int i = 0; i < numberOfPlayers; i++)
@@ -112,43 +120,43 @@ public class BlackJack {
 				peoplePlaying[i].addCard(deck.randomCard());
 			dealer.addCard(deck.randomCard());
 		
-		//First Default deal is out...
+		//First Default deal is out, First card is Shown, Second card is Hidden
 			System.out.println("Dealers Hand : " + dealer.getCard(0) + " X");
 
 			//Players turn...
-			int opt = 0;
+			int opt = 0; //Users Option...
 			for(int i = 0; i < numberOfPlayers; i++){
 				System.out.println(peoplePlaying[i]);
 				opt = correctInput();
 				if(opt == 1){
 					peoplePlaying[i].addCard(deck.randomCard());
 					System.out.println("You got a : " + peoplePlaying[i].getCard(peoplePlaying[i].getSize()-1));
-					if(bust(i))
+					if(bust(i)) //if player busts then move to next player..
 						continue;
-					else{
+					else{ //otherwise if player doesn't bust then ask player what they want to do
 						i--;
 						continue;
 					}
-				}else if (opt == 2)
+				}else if (opt == 2) //Does nothing...
 					continue;
-				else if (opt == 3){
+				else if (opt == 3){ //Doubles the bet but does nothing yet
 					System.out.println("Hey were given option double, which doesent do anything yet");
 					i--;
-				}else if(opt == 4){
+				}else if(opt == 4){ //Splits the cards but does nothing yet
 					System.out.println("Hey were given option split, which doesent do anythitng yet");
 					i--;
 				}
 			}
 
 			//Dealers turn...
-			int cardSum = 0;
+			int cardSum = 0; 
 			int aces = 0;
 			boolean done=false;
-			while(!done){
+			while(!done){ 
 				System.out.println(dealer);
 				cardSum = 0;
 				for(int i=0; i<dealer.getSize(); i++){
-					if(dealer.getCard(i).contains("A"))
+					if(dealer.getCard(i).contains("A")) 
 						aces++;
 					else
 						cardSum	+= cardValue(dealer.getCard(i));
@@ -167,54 +175,72 @@ public class BlackJack {
 				}
 			}
 
-			//Evaluation / Payout time
+			eval(cardSum); //evaluates who won, who lost, who tied
 
-			eval(cardSum); //evaluation of who won and who lost
-			
-			dealer.clear();
-			int numberOfPlayersDone = 0;
-			for(int i = 0; i<numberOfPlayers; i++){
-				System.out.print(peoplePlaying[i].getName() + ", do you want to play again? (Y/N)");
-				String ans = sc.nextLine().toLowerCase();
-				while(!ans.equals("y") && !ans.equals("n")){
-					System.out.print("This is not Y/N... please try again... ");
-					ans = sc.nextLine().toLowerCase();
-				}
-				if(ans.equals("n")){
-					peoplePlaying[i].looser(false);
-					System.out.println("Thanks for playing " + peoplePlaying[i].getName());
-					numberOfPlayersDone++;
-				}else
-					peoplePlaying[i].clear();
-			}
-			if(numberOfPlayersDone != 0){
-				int temp = numberOfPlayers;
-				for(int i=0; i<temp; i++){
-					if(!peoplePlaying[i].isPlaying())
-						remove(i);
-				}
-			}
-			gamesPlayed++;
-			if(numberOfPlayers == 0)
+			if(!afterGame())  //if there are no players playing anymore.. then exit while loop and game
 				stillPlaying = false;
-			else
+			else { //otherwise keep playing
+				dealer.clear(); //clears the dealers deck...
 				continue;
+			}
 		}
 
-		System.out.println("Thank You for playing BlackJack - by Croller");
-		//stasticts()
+		System.out.println("\nThank You for playing BlackJack - by Croller\n");
 
 	}
+	/*
+	Overview: After each round, this method asks players if they want to keep playing or not
+			  If they do, the method will return true, Otherwise false
+	Pre-Conditions: A game must complete
+	Post-Conditions: A new game or exit the program
+	*/ 
+	private boolean afterGame(){
+		int numberOfPlayersDone = 0; //tallys the number of players who don't want to play anymore
+		for(int i = 0; i<numberOfPlayers; i++){
+			System.out.print(peoplePlaying[i].getName() + ", do you want to play again? (Y/N) :");
+			String ans = sc.nextLine().toLowerCase();
+			while(!ans.equals("y") && !ans.equals("n")){
+				System.out.print("This is not Y/N... please try again... :");
+				ans = sc.nextLine().toLowerCase();
+			}
+			if(ans.equals("n")){
+				peoplePlaying[i].looser(false);
+				System.out.println("Thanks for playing " + peoplePlaying[i].getName());
+				//statistics(i) //Will give player results of his games
+				numberOfPlayersDone++;
+			}else
+				peoplePlaying[i].clear(); //We know player is playing.. so clear his current cards
+		}
+		if(numberOfPlayersDone != 0){
+			int temp = numberOfPlayers;
+			for(int i=0; i<temp; i++){
+				if(!peoplePlaying[i].isPlaying())
+					remove(i); //removes player from [] peoplePlaying
+			}
+		}
+		gamesPlayed++; //one game has played... so increment gamesPlayed
+		if(numberOfPlayers == 0)
+			return false; //game over!
+		else
+			return true; //game still on for remaining players
+	}
 
-	public void remove(int n){
+	//Overview: removes player at index n from peoplePlaying[]
+	private void remove(int n){
 		for(int i=n; i<numberOfPlayers; i++)
 			peoplePlaying[n] = peoplePlaying[n+1];
 		numberOfPlayers--;
 	}
-	public void eval(int dsum){
+
+	/*
+	Overview: evaluates the outcome of all players vs dealer
+	Pre-Conditions: 
+	Post-Conditions: 
+	*/
+	private void eval(int dsum){
 		System.out.println("\n..........Evaluation..........");
-		System.out.println(dealer);
-		for(int i=0; i<numberOfPlayers; i++){
+		System.out.println(dealer); //Shows dealers hand
+		for(int i=0; i<numberOfPlayers; i++){ 
 			if(bust(i))
 				continue;
 			else{
@@ -244,80 +270,61 @@ public class BlackJack {
 	/*
 	Overview Returns True: if player busts
 					 False: Otherwise
+	Parameters: int n: index of player
+	Pre-Conditions: A player makes a move
 	*/
-	public boolean bust(int n){
+	private boolean bust(int n){
 		int sum = 0;
 		int ace = 0;
-		ArrayList<String> temp = peoplePlaying[n].getCards();
+		ArrayList<String> temp = peoplePlaying[n].getCards(); //Temp ArrayList to tally up card values
 		for(int i=0; i<temp.size(); i++){
-			if(temp.get(i).contains("A"))
+			if(temp.get(i).contains("A")) //Tallys aces to compare to the whole some of othercards
 				ace++;
 			else
-				sum += cardValue(temp.get(i));
+				sum += cardValue(temp.get(i)); //Tallys up everyother card value into sum
 		}
-		while(ace != 0){
+		while(ace != 0){ //decides what an ace or aces will be counted as
 			sum += cardValueA(sum);
 			ace--;
 		}
-		if(sum > 21){
+		if(sum > 21){ //You busted...
 			System.out.println(peoplePlaying[n].getName() + " BUSTED!!!" + sum + "..."); //Busted...
 			peoplePlaying[n].looser(false); //Change Boolean of player isPlaying ... to false using mutator method loose
 			return true;
 		}
-		else if(sum<21){
+		else if(sum<21){ //Still alive!
 			System.out.println(peoplePlaying[n].getName() + " Didnt Bust! " + sum); //Didnt Bust
 			return false;
-		}else {
+		}else { //BLACKJACK!
 			System.out.println("BLACKJACK!!!! " + sum + " Baby!!!"); //BlackJack
 			return false;
 		}
 	}
 
-	public boolean isGameOver(){
-		int falseCount = 0;
-		for(int i=0; i<numberOfPlayers; i++){
-			if(peoplePlaying[i].isPlaying() == false){
-				falseCount++;
-			}
-		}
-		if(falseCount == numberOfPlayers)
-			return true;
-		return false;
-	}
-
-	public int cardValue(String s){
+	//Overview: Returns card values for all cards but Aces
+	private int cardValue(String s){
 		if(s.contains("J") || s.contains("Q") || s.contains("K") || s.contains("1"))
 			return 10; 
 		else
 			return Integer.parseInt(s.substring(0,1));
 		
 	}
-	public int cardValueA(int sum){
+	//Overview: Returns card value for Ace depending on the sum of the other cards in play
+	private int cardValueA(int sum){
 		if (sum <= 10)
 			return 11;
 		else 
 			return 1;
 	}
-
-	/*public int aceOption(){
-		System.out.print("How would you like to use your ace? (1 to count as 1 or 2 to count as 11) : ");
-		String s = sc.nextLine();
-		while(!s.equals("1") && !s.equals("2")){
-			System.out.println(s + " is not an option");
-			System.out.print("What would you like to do? (1 to count as 1 or 2 to count as 11) : ");
-			s = sc.nextLine();
-		}
-		if(s.contains("1"))
-			return 1;
-		else 
-			return 11;
-	}*/
-
-	public static void main(String [] args){
-		BlackJack b = new BlackJack();
-		System.out.println("\nYes we're going into a game!");
-		b.game();
+	//Overview: Shows statistics for player that is leaving...
+	private void statistics(int n){
 
 	}
 
+	//main to simulate game
+	public static void main(String [] args){
+		BlackJack b = new BlackJack();
+		//System.out.println("\nYes we're going into a game!"); //Testing...
+		b.game();
+	}
 }
