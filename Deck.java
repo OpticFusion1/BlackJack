@@ -15,6 +15,8 @@ public class Deck {
 	//fills array deck with 52 cards
 	public void newDeck(){
 		
+		//System.out.println("A new Deck is being created..."); //testing...
+		
 		//Adding Hearts to Deck
 		for(int i=0; i<o1.length(); i++)
 		 	deck.add(o1.charAt(i)+"H");
@@ -52,18 +54,17 @@ public class Deck {
 	public String randomCard(){
 		//System.out.println(deck.size());
 		Random rand = new Random();
+		if(deck.size() == 0)
+			newDeck();
 		int r = rand.nextInt(deck.size());
 		while(deck.get(r) == null){
-			if (deck.isEmpty())
-				newDeck();
-			else
-				r = rand.nextInt(deck.size());
+			r = rand.nextInt(deck.size());
 		}
 		String s = deck.get(r);
 		deck.remove(r);
 		return s;
 	}
-
+	//Returns the size of the deck
 	public int deckSize(){
 		return deck.size();
 	}
