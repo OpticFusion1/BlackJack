@@ -6,6 +6,7 @@
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.io.*;
 
 public class BlackJack {
 
@@ -29,9 +30,10 @@ public class BlackJack {
 	*/
 	public BlackJack(){
 		sc = new Scanner(System.in);
-		if(gamesPlayed == 0)
+		if(gamesPlayed == 0){
 			intro();
-		else
+			File stats = new File("Stats.txt");
+		}else
 			game();
 	}
 
@@ -107,10 +109,11 @@ public class BlackJack {
 	public void game(){
 		deck = new Deck(); //creates a new deck with 52 cards (eventually to be more once betting is implemented)
 		dealer = new Player(true, "Dealer"); //creates Player Dealer for dealer cards
-		System.out.println("\nRound " + gamesPlayed + "\n");
 		
 		boolean stillPlaying = true;
 		while(stillPlaying){ //Loop that iterates until all players are done playing
+
+			System.out.println("\nRound " + gamesPlayed + "\n"); //Tells the current round
 
 			//Dealing init cards to players / dealer
 			for(int i = 0; i < numberOfPlayers; i++)
@@ -195,6 +198,7 @@ public class BlackJack {
 	Post-Conditions: A new game or exit the program
 	*/ 
 	private boolean afterGame(){
+		gamesPlayed++; //one game has played... so increment gamesPlayed
 		int numberOfPlayersDone = 0; //tallys the number of players who don't want to play anymore
 		for(int i = 0; i<numberOfPlayers; i++){
 			System.out.print(peoplePlaying[i].getName() + ", do you want to play again? (Y/N) :");
@@ -212,13 +216,11 @@ public class BlackJack {
 				peoplePlaying[i].clear(); //We know player is playing.. so clear his current cards
 		}
 		if(numberOfPlayersDone != 0){
-			int temp = numberOfPlayers;
-			for(int i=0; i<temp; i++){
+			for(int i=0; i<numberOfPlayers; i++){
 				if(!peoplePlaying[i].isPlaying())
 					remove(i); //removes player from [] peoplePlaying
 			}
 		}
-		gamesPlayed++; //one game has played... so increment gamesPlayed
 		if(numberOfPlayers == 0)
 			return false; //game over!
 		else
@@ -227,8 +229,8 @@ public class BlackJack {
 
 	//Overview: removes player at index n from peoplePlaying[]
 	private void remove(int n){
-		for(int i=n; i<numberOfPlayers; i++)
-			peoplePlaying[n] = peoplePlaying[n+1];
+		for(int i=n; i<numberOfPlayers-1; i++)
+			peoplePlaying[i] = peoplePlaying[i+1];
 		numberOfPlayers--;
 	}
 
