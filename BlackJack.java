@@ -32,7 +32,7 @@ public class BlackJack {
 		sc = new Scanner(System.in);
 		if(gamesPlayed == 0){
 			intro();
-			File stats = new File("Stats.txt");
+			//File stats = new File("Stats.txt");
 		}else
 			game();
 	}
@@ -77,7 +77,7 @@ public class BlackJack {
 			}catch (Exception e){}
 			time--;
 		}
-		gamesPlayed++;
+		
 	}
 
 	/*
@@ -113,7 +113,7 @@ public class BlackJack {
 		boolean stillPlaying = true;
 		while(stillPlaying){ //Loop that iterates until all players are done playing
 
-			System.out.println("\nRound " + gamesPlayed + "\n"); //Tells the current round
+			System.out.println("\nRound " + (gamesPlayed+1) + "\n"); //Tells the current round
 
 			//Dealing init cards to players / dealer
 			for(int i = 0; i < numberOfPlayers; i++)
@@ -191,6 +191,7 @@ public class BlackJack {
 		System.out.println("\nThank You for playing BlackJack - by Croller\n");
 
 	}
+
 	/*
 	Overview: After each round, this method asks players if they want to keep playing or not
 			  If they do, the method will return true, Otherwise false
@@ -199,7 +200,7 @@ public class BlackJack {
 	*/ 
 	private boolean afterGame(){
 		gamesPlayed++; //one game has played... so increment gamesPlayed
-		int numberOfPlayersDone = 0; //tallys the number of players who don't want to play anymore
+		int temp = numberOfPlayers;
 		for(int i = 0; i<numberOfPlayers; i++){
 			System.out.print(peoplePlaying[i].getName() + ", do you want to play again? (Y/N) :");
 			String ans = sc.nextLine().toLowerCase();
@@ -208,18 +209,11 @@ public class BlackJack {
 				ans = sc.nextLine().toLowerCase();
 			}
 			if(ans.equals("n")){
-				peoplePlaying[i].looser(false);
-				System.out.println("Thanks for playing " + peoplePlaying[i].getName());
-				//statistics(i) //Will give player results of his games
-				numberOfPlayersDone++;
+				peoplePlaying[i].stillPlaying(false);
+				statistics(i); //Will give player results of there game or games
+				i--;
 			}else
 				peoplePlaying[i].clear(); //We know player is playing.. so clear his current cards
-		}
-		if(numberOfPlayersDone != 0){
-			for(int i=0; i<numberOfPlayers; i++){
-				if(!peoplePlaying[i].isPlaying())
-					remove(i); //removes player from [] peoplePlaying
-			}
 		}
 		if(numberOfPlayers == 0)
 			return false; //game over!
@@ -229,9 +223,9 @@ public class BlackJack {
 
 	//Overview: removes player at index n from peoplePlaying[]
 	private void remove(int n){
-		for(int i=n; i<numberOfPlayers-1; i++)
+		for(int i=n; i<numberOfPlayers-1; i++){
 			peoplePlaying[i] = peoplePlaying[i+1];
-		numberOfPlayers--;
+		}numberOfPlayers--;
 	}
 
 	/*
@@ -243,9 +237,10 @@ public class BlackJack {
 		System.out.println("\n..........Evaluation..........");
 		System.out.println(dealer); //Shows dealers hand
 		for(int i=0; i<numberOfPlayers; i++){ 
-			if(bust(i))
+			if(bust(i)){
+				peoplePlaying[i].addLoss();
 				continue;
-			else{
+			}else{
 				int psum = 0;
 				int ace = 0;
 				for(int j=0; j<peoplePlaying[i].getSize(); j++){
@@ -257,14 +252,19 @@ public class BlackJack {
 					psum += cardValueA(psum);
 					ace--;
 				}
-				if(dsum > 21)
+				if(dsum > 21){
+					peoplePlaying[i].addWin();
 					System.out.println(peoplePlaying[i].getName() + " wins with a sum of " + psum + " dealer busted...");
-				else if(dsum < psum)
+				}else if(dsum < psum){
+					peoplePlaying[i].addWin();
 					System.out.println(peoplePlaying[i].getName() + " wins with a sum of " + psum + " vs " + dsum);
-				else if(dsum == psum)
-					System.out.println(peoplePlaying[i].getName() + " Push.... " + psum + " vs " + dsum);
-				else 
-					System.out.println(peoplePlaying[i].getName() + " looses to the dealer ....." + psum + " vs " + dsum);
+				}else if(dsum == psum){
+					peoplePlaying[i].addTie();
+					System.out.println(peoplePlaying[i].getName() + " Tie... " + psum + " vs " + dsum);
+				}else {
+					peoplePlaying[i].addLoss();
+					System.out.println(peoplePlaying[i].getName() + " lost to the dealer ....." + psum + " vs " + dsum);
+				}
 			}
 		}
 	}
@@ -291,7 +291,6 @@ public class BlackJack {
 		}
 		if(sum > 21){ //You busted...
 			System.out.println(peoplePlaying[n].getName() + " BUSTED!!!" + sum + "..."); //Busted...
-			peoplePlaying[n].looser(false); //Change Boolean of player isPlaying ... to false using mutator method loose
 			return true;
 		}
 		else if(sum<21){ //Still alive!
@@ -320,6 +319,13 @@ public class BlackJack {
 	}
 	//Overview: Shows statistics for player that is leaving...
 	private void statistics(int n){
+		System.out.println("\nStatistics Page for " + peoplePlaying[n].getName() + "\n");
+		System.out.println(peoplePlaying[n].getName() + ", you played a total of " + gamesPlayed + " games");
+		System.out.println("Wins : " + peoplePlaying[n].wins());
+		System.out.println("Ties : " + peoplePlaying[n].ties());
+		System.out.println("Losses : " + peoplePlaying[n].losses());
+		System.out.println("\nThanks for playing " + peoplePlaying[n].getName());
+		remove(n);
 
 	}
 
