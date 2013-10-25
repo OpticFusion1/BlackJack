@@ -17,6 +17,7 @@ public class Deck {
 		
 		//System.out.println("A new Deck is being created..."); //testing...
 		
+		
 		//Adding Hearts to Deck
 		for(int i=0; i<o1.length(); i++)
 		 	deck.add(o1.charAt(i)+"H");
