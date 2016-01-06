@@ -10,6 +10,6 @@ Text based BlackJack Game written in Java
 
 #Accreditation
 
-Written By [Collen Roller][1]
+Written by [Collen Roller][1]
 
 [1]: https://github.com/collen-roller
