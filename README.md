@@ -8,6 +8,8 @@ Text based BlackJack Game written in Java
 
 	Enjoy :)
 
+	Testing a merge!
+
 #Accreditation
 
 Written by [Collen Roller][1]
