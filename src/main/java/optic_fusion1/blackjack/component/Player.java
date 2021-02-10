@@ -3,6 +3,7 @@ package optic_fusion1.blackjack.component;
 import java.util.ArrayList;
 import java.util.List;
 import optic_fusion1.engine.component.Component;
+import optic_fusion1.engine.game.Game;
 
 public class Player extends Component {
 
@@ -10,8 +11,8 @@ public class Player extends Component {
   private List<String> cards = new ArrayList<>();
   private int wins = 0, losses = 0, ties = 0;
 
-  public Player(String name) {
-    super(name);
+  public Player(String name, Game game) {
+    super(name, game);
   }
 
   //Mutator Methdos for Player Class
@@ -75,6 +76,14 @@ public class Player extends Component {
       message += "," + cards.get(i);
     }
     return message;
+  }
+
+  @Override
+  public void tick() {
+  }
+
+  @Override
+  public void render() {
   }
 
 }

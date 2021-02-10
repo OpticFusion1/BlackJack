@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import optic_fusion1.engine.component.Component;
+import optic_fusion1.engine.game.Game;
 import static optic_fusion1.engine.game.Game.LOGGER;
 
 public class Deck extends Component {
@@ -13,8 +14,8 @@ public class Deck extends Component {
   private String o1 = "23456789"; //TODO: Come up with a better variable name
   private String o2 = "JQKA"; //TODO: Come up with a better variable name
 
-  public Deck() {
-    super("Deck");
+  public Deck(Game game) {
+    super("Deck", game);
     newDeck();
   }
 
@@ -69,6 +70,14 @@ public class Deck extends Component {
    */
   public int getDeckSize() {
     return deck.size();
+  }
+
+  @Override
+  public void tick() {
+  }
+
+  @Override
+  public void render() {
   }
 
 }

@@ -17,8 +17,8 @@ public class BlackJack extends SimpleGame {
 
   private int numberOfPlayers = 0; //How many players are playing (between 1-4 inclusive)
   private Player[] peoplePlaying; //Array of Player objects; stores player information
-  private Player dealer = new Player("Dealer"); //creates Player Dealer for dealer cards
-  private Deck deck = new Deck(); //Deck object to construct a deck of cards and return a random card & creates a new deck with 52 cards (eventually to be more once betting is implemented)
+  private Player dealer = new Player("Dealer", this); //creates Player Dealer for dealer cards
+  private Deck deck = new Deck(this); //Deck object to construct a deck of cards and return a random card & creates a new deck with 52 cards (eventually to be more once betting is implemented)
   private int gamesPlayed = 0; //Keeps track of how many games have been played
 
   /*
@@ -141,7 +141,7 @@ public class BlackJack extends SimpleGame {
     while (count < numberOfPlayers) {
       LOGGER.info("Player " + (count + 1) + ", Enter a name to play with: ");
       String name = getScanner().nextLine(); //Prompting Player for name
-      peoplePlaying[count] = new Player(name);
+      peoplePlaying[count] = new Player(name, this);
       LOGGER.info("Player " + (count + 1) + ", You've sucessfully named yourself " + name);
       count++;
     }
